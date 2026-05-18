@@ -319,22 +319,20 @@ export default function CallVerifications() {
             <EmptyState message="No call recordings yet — waiting for Bolna to send recordings" icon={Mic} />
           ) : (
             <div className="w-full">
-              <Table className="text-xs">
+              <Table className="text-xs w-full table-fixed">
                 <TableHeader>
                   <TableRow>
-                     <TableHead className="text-xs whitespace-nowrap">Received At</TableHead>
-                     <TableHead className="text-xs">Client</TableHead>
-                     <TableHead className="text-xs">Dur.</TableHead>
+                     <TableHead className="text-xs w-[90px]">Received</TableHead>
+                     <TableHead className="text-xs w-[70px]">Client</TableHead>
+                     <TableHead className="text-xs w-[55px]">Dur.</TableHead>
                      <TableHead className="text-xs">AI Summary</TableHead>
-                        <TableHead className="text-xs whitespace-nowrap">Action Type</TableHead>
-                        <TableHead className="text-xs">Triage</TableHead>
-                        <TableHead className="text-xs whitespace-nowrap">Sub Category</TableHead>
-                        <TableHead className="text-xs">Risk</TableHead>
-                        <TableHead className="text-xs">Priority</TableHead>
-                     <TableHead className="text-xs">Ext.</TableHead>
-                     <TableHead className="text-xs">Status</TableHead>
-                     <TableHead className="text-xs">Review</TableHead>
-                     <TableHead className="text-xs"></TableHead>
+                     <TableHead className="text-xs w-[90px]">Triage</TableHead>
+                     <TableHead className="text-xs w-[110px]">Sub Category</TableHead>
+                     <TableHead className="text-xs w-[60px]">Risk</TableHead>
+                     <TableHead className="text-xs w-[70px]">Priority</TableHead>
+                     <TableHead className="text-xs w-[90px]">Status</TableHead>
+                     <TableHead className="text-xs w-[80px]">Review</TableHead>
+                     <TableHead className="text-xs w-[40px]"></TableHead>
                    </TableRow>
                  </TableHeader>
                 <TableBody>
@@ -343,18 +341,11 @@ export default function CallVerifications() {
                     const client = clientMap[rec.client_id];
                     return (
                       <TableRow key={rec.id} className="hover:bg-muted/40">
-                        <TableCell className="text-xs whitespace-nowrap">{rec.received_at ? format(new Date(rec.received_at), 'MMM d, HH:mm') : '-'}</TableCell>
-                        <TableCell>
-                          <p className="text-xs font-mono">{rec.client_id || '—'}</p>
-                        </TableCell>
-                        <TableCell className="text-xs font-mono whitespace-nowrap">{formatDuration(rec.duration_seconds)}</TableCell>
-                        <TableCell className="text-xs text-muted-foreground max-w-[160px] truncate">
-                          {analysis?.summary ? analysis.summary.slice(0, 60) + (analysis.summary.length > 60 ? '…' : '') : rec.analysis_status}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className={`text-xs font-semibold ${TRIAGE_BADGE[classifyCall(analysis)]}`}>
-                            {classifyCall(analysis).replace(/_/g, ' ')}
-                          </Badge>
+                        <TableCell className="text-xs">{rec.received_at ? format(new Date(rec.received_at), 'MMM d, HH:mm') : '-'}</TableCell>
+                        <TableCell className="text-xs font-mono truncate">{rec.client_id || '—'}</TableCell>
+                        <TableCell className="text-xs font-mono">{formatDuration(rec.duration_seconds)}</TableCell>
+                        <TableCell className="text-xs text-muted-foreground truncate">
+                          {analysis?.summary ? analysis.summary.slice(0, 55) + (analysis.summary.length > 55 ? '…' : '') : rec.analysis_status}
                         </TableCell>
                          <TableCell>
                            {(() => {
@@ -365,7 +356,7 @@ export default function CallVerifications() {
                          </TableCell>
                         <TableCell>
                           {rec.sub_category ? (
-                            <Badge variant="outline" className="text-xs font-semibold bg-blue-50 text-blue-700 border-blue-200">
+                            <Badge variant="outline" className="text-xs font-semibold bg-blue-50 text-blue-700 border-blue-200 truncate max-w-full">
                               {rec.sub_category}
                             </Badge>
                           ) : <span className="text-xs text-muted-foreground">—</span>}
@@ -383,9 +374,6 @@ export default function CallVerifications() {
                               {rec.priority}
                             </Badge>
                           ) : <span className="text-xs text-muted-foreground">—</span>}
-                        </TableCell>
-                        <TableCell className="text-xs text-center font-semibold">
-                          {analysis?.extractions?.length ?? '—'}
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline" className={`text-xs ${VERIFY_BADGE[rec.verification_status] || ''}`}>

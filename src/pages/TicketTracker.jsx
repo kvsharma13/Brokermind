@@ -266,21 +266,20 @@ export default function TicketTracker() {
           ) : filtered.length === 0 ? (
             <EmptyState message="No tickets found" />
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
+            <div className="w-full">
+              <Table className="text-xs w-full table-fixed">
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="text-xs w-8"></TableHead>
-                    <TableHead className="text-xs">Ticket ID</TableHead>
-                    <TableHead className="text-xs">Created</TableHead>
-                    <TableHead className="text-xs">Source</TableHead>
-                    <TableHead className="text-xs">Client</TableHead>
-                    <TableHead className="text-xs">Category</TableHead>
+                    <TableHead className="w-8"></TableHead>
+                    <TableHead className="text-xs w-[90px]">Ticket ID</TableHead>
+                    <TableHead className="text-xs w-[90px]">Created</TableHead>
+                    <TableHead className="text-xs w-[60px]">Source</TableHead>
+                    <TableHead className="text-xs w-[100px]">Client</TableHead>
+                    <TableHead className="text-xs w-[110px]">Category</TableHead>
                     <TableHead className="text-xs">Subject</TableHead>
-                    <TableHead className="text-xs">Priority</TableHead>
-                    <TableHead className="text-xs">Status</TableHead>
-                    <TableHead className="text-xs">Assigned To</TableHead>
-                    <TableHead className="text-xs">Actions</TableHead>
+                    <TableHead className="text-xs w-[70px]">Priority</TableHead>
+                    <TableHead className="text-xs w-[90px]">Status</TableHead>
+                    <TableHead className="text-xs w-[130px]">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -290,39 +289,35 @@ export default function TicketTracker() {
                         className="cursor-pointer hover:bg-muted/40"
                         onClick={() => toggleExpand(ticket.id)}
                       >
-                        <TableCell>
+                        <TableCell className="w-8">
                           {expandedId === ticket.id
                             ? <ChevronDown className="w-4 h-4 text-muted-foreground" />
                             : <ChevronRight className="w-4 h-4 text-muted-foreground" />}
                         </TableCell>
-                        <TableCell className="font-mono text-xs font-semibold">{ticket.ticket_id}</TableCell>
+                        <TableCell className="font-mono text-xs font-semibold truncate">{ticket.ticket_id}</TableCell>
                         <TableCell className="text-xs">{ticket.created_at ? format(new Date(ticket.created_at), 'MMM d, HH:mm') : '—'}</TableCell>
                         <TableCell>
                           <Badge variant="outline" className={`text-xs ${SOURCE_BADGE[ticket.source] || ''}`}>{ticket.source}</Badge>
                         </TableCell>
-                        <TableCell>
-                          <p className="text-sm font-medium">{ticket.client_name || '—'}</p>
-                          <p className="text-xs text-muted-foreground">{ticket.client_phone || ticket.client_email || ''}</p>
-                        </TableCell>
-                        <TableCell className="text-xs">{ticket.category || '—'}</TableCell>
-                        <TableCell className="text-sm max-w-[200px] truncate">{ticket.subject || '—'}</TableCell>
+                        <TableCell className="text-xs font-medium truncate">{ticket.client_name || '—'}</TableCell>
+                        <TableCell className="text-xs truncate">{ticket.category || '—'}</TableCell>
+                        <TableCell className="text-xs truncate">{ticket.subject || '—'}</TableCell>
                         <TableCell>
                           <Badge variant="outline" className={`text-xs ${PRIORITY_BADGE[ticket.priority] || ''}`}>{ticket.priority}</Badge>
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline" className={`text-xs ${STATUS_BADGE[ticket.status] || ''}`}>{ticket.status?.replace('_', ' ')}</Badge>
                         </TableCell>
-                        <TableCell className="text-xs">{ticket.assigned_to || '—'}</TableCell>
                         <TableCell>
-                          <div className="flex gap-1.5">
+                          <div className="flex gap-1">
                             <Button
-                              size="sm" variant="outline" className="text-xs gap-1"
+                              size="sm" variant="outline" className="text-xs gap-1 h-7 px-2"
                               onClick={e => { e.stopPropagation(); setWorkflowTicket(ticket); }}
                             >
-                              <Eye className="w-3.5 h-3.5" /> View
+                              <Eye className="w-3 h-3" /> View
                             </Button>
                             <Button
-                              size="sm" variant="outline" className="text-xs gap-1"
+                              size="sm" variant="outline" className="text-xs h-7 px-2"
                               onClick={e => toggleUpdate(ticket.id, e)}
                             >
                               Update
@@ -332,14 +327,14 @@ export default function TicketTracker() {
                       </TableRow>
                       {updatePanelId === ticket.id && (
                         <TableRow>
-                          <TableCell colSpan={11} className="p-0">
+                          <TableCell colSpan={10} className="p-0">
                             <UpdatePanel ticket={ticket} onClose={() => setUpdatePanelId(null)} />
                           </TableCell>
                         </TableRow>
                       )}
                       {expandedId === ticket.id && (
                         <TableRow>
-                          <TableCell colSpan={11} className="p-0">
+                          <TableCell colSpan={10} className="p-0">
                             <DetailPanel ticket={ticket} />
                           </TableCell>
                         </TableRow>
