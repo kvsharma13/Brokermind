@@ -701,7 +701,8 @@ export class FunctionsService {
       const url = `https://api.bolna.ai/agent/${agentId}/executions?page_number=${pageNumber}&page_size=50&status=completed`;
       const response = await fetch(url, { headers: { Authorization: `Bearer ${apiKey}` } });
       if (!response.ok) {
-        return { error: `Bolna API error: ${response.statusText}`, status: response.status };
+        const errBody = await response.text().catch(() => '');
+        throw new BadRequestException(`Bolna API error ${response.status}: ${errBody || response.statusText}`);
       }
       const data: any = await response.json();
       const executions = data.executions || data.data || (Array.isArray(data) ? data : []);

@@ -208,11 +208,15 @@ export default function CallVerifications() {
     try {
       const res = await brokermind.functions.invoke('syncBolnaCalls', {});
       queryClient.invalidateQueries({ queryKey: ['recordings'] });
-      toast({
-        title: 'Sync Complete',
-        description: `Synced ${res.synced} new recordings, ${res.skipped} skipped`,
-        duration: 3000,
-      });
+      if (res?.error) {
+        toast({ title: 'Sync Failed', description: res.error, variant: 'destructive', duration: 5000 });
+      } else {
+        toast({
+          title: 'Sync Complete',
+          description: `Synced ${res.synced ?? 0} new recordings, ${res.skipped ?? 0} skipped`,
+          duration: 3000,
+        });
+      }
     } catch (err) {
       toast({
         title: 'Sync Failed',
