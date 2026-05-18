@@ -108,6 +108,38 @@ export class GmailAuthService {
     return data.access_token || null;
   }
 
+  async debugGetToken(): Promise<any> {
+    const hasTokenFile = !!this.loadTokens();
+    const envRefreshToken = process.env.GMAIL_REFRESH_TOKEN || '';
+    const hasEnvRefresh = envRefreshToken.length > 0;
+    const clientId = this.clientId();
+    const clientSecret = this.clientSecret();
+
+    let googleResponse: any = null;
+    if (hasEnvRefresh && clientId && clientSecret) {
+      const res = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          refresh_token: envRefreshToken,
+          client_id: clientId,
+          client_secret: clientSecret,
+          grant_type: 'refresh_token',
+        }),
+      });
+      googleResponse = await res.json();
+    }
+
+    return {
+      has_token_file: hasTokenFile,
+      has_env_refresh_token: hasEnvRefresh,
+      env_refresh_token_length: envRefreshToken.length,
+      has_client_id: !!clientId,
+      has_client_secret: !!clientSecret,
+      google_response: googleResponse,
+    };
+  }
+
   getConnectedEmail(): string {
     return this.loadTokens()?.email || process.env.GMAIL_CONNECTED_EMAIL || '';
   }
