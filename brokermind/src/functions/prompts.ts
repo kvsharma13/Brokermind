@@ -94,20 +94,20 @@ export const EMAIL_RELEVANCE_PROMPT = (args: {
   from_name?: string;
   subject: string;
   body?: string;
-}) => `You are a strict email filter for the Trademax brokerage support inbox (support@trademax.com).
+}) => `You are a strict email filter for a stock brokerage support inbox.
 
-Determine if this email is from a REAL HUMAN CUSTOMER writing to Trademax brokerage about their trading/demat account or financial services.
+Determine if this email is from a REAL HUMAN CUSTOMER writing about trading, investing, or financial services related to a brokerage or stock broker platform.
 
 An email is RELEVANT ONLY if it is clearly a real person writing about:
-- Buying or selling stocks, shares, mutual funds, or any securities on Trademax
-- Demat account opening or closure with Trademax
-- KYC (Know Your Customer) documentation for Trademax account
-- Fund transfer, deposit, or withdrawal to/from a Trademax trading account
-- Portfolio queries or holdings on Trademax platform
-- Complaints about unauthorized trades or fraud on Trademax
-- Margin queries for Trademax account
-- Login or platform issues with Trademax
-- Any direct Trademax brokerage service request
+- Buying or selling stocks, shares, mutual funds, or any securities
+- Demat account opening or closure
+- KYC (Know Your Customer) documentation for a trading account
+- Fund transfer, deposit, or withdrawal to/from a trading or brokerage account
+- Portfolio queries or holdings
+- Complaints about unauthorized trades or fraud
+- Margin queries for a trading account
+- Login or platform issues with a broker or trading platform
+- Any direct brokerage or stock trading service request
 
 An email is NOT RELEVANT if it is ANY of the following (be very strict):
 - Order delivery, shipment tracking, or courier updates (Shiprocket, Delhivery, FedEx, Blue Dart, DTDC, etc.)

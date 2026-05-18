@@ -50,16 +50,23 @@ export class GmailAuthService {
 
   async getAccessToken(): Promise<string | null> {
     const tokens = this.loadTokens();
-    if (!tokens) return process.env.GMAIL_ACCESS_TOKEN || null;
 
-    // Valid with 5-min buffer
-    if (tokens.expiry_date && tokens.expiry_date > Date.now() + 300_000) {
+    // Token file exists and is still valid
+    if (tokens?.expiry_date && tokens.expiry_date > Date.now() + 300_000) {
       return tokens.access_token;
     }
 
-    if (tokens.refresh_token) {
+    // Refresh using token file's refresh_token
+    if (tokens?.refresh_token) {
       return this.refresh(tokens.refresh_token);
     }
+
+    // Fallback: use GMAIL_REFRESH_TOKEN env var (Railway / hardcoded setup)
+    const envRefreshToken = process.env.GMAIL_REFRESH_TOKEN;
+    if (envRefreshToken) {
+      return this.refreshFromEnv(envRefreshToken);
+    }
+
     return process.env.GMAIL_ACCESS_TOKEN || null;
   }
 
@@ -85,8 +92,24 @@ export class GmailAuthService {
     return data.access_token;
   }
 
+  private async refreshFromEnv(refreshToken: string): Promise<string | null> {
+    const res = await fetch('https://oauth2.googleapis.com/token', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        refresh_token:  refreshToken,
+        client_id:      this.clientId(),
+        client_secret:  this.clientSecret(),
+        grant_type:     'refresh_token',
+      }),
+    });
+    const data: any = await res.json();
+    if (data.error) return null;
+    return data.access_token || null;
+  }
+
   getConnectedEmail(): string {
-    return this.loadTokens()?.email || '';
+    return this.loadTokens()?.email || process.env.GMAIL_CONNECTED_EMAIL || '';
   }
 
   setConnectedEmail(email: string): void {

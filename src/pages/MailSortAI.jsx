@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { Mail, LogOut, Loader2 } from 'lucide-react';
+import React, { useState, useCallback } from 'react';
+import { Mail, Loader2 } from 'lucide-react';
 import { brokermind } from '@/api/brokermindClient';
 import { useQuery } from '@tanstack/react-query';
 import MailSortHeader from '@/components/mailsort/MailSortHeader';
@@ -29,38 +29,9 @@ const CATEGORY_CONFIG = SUBCATEGORY_CONFIG;
 
 export default function MailSortAI() {
   const { toast } = useToast();
-  const [connected, setConnected] = useState(false);
-  const [userEmail, setUserEmail] = useState('');
   const [emails, setEmails] = useState([]);
   const [loading, setLoading] = useState(false);
   const [emailsFetched, setEmailsFetched] = useState(true);
-
-  // Check Gmail connection status on mount + handle OAuth callback params
-  React.useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('gmail_connected')) {
-      window.history.replaceState({}, '', window.location.pathname);
-      brokermind.functions.invoke('fetchGmailEmails', { check_connection: true })
-        .then(res => {
-          const email = res?.connected_email || '';
-          setUserEmail(email);
-          setConnected(true);
-          toast({ title: 'Gmail Connected', description: `Connected as ${email}` });
-        }).catch(() => {});
-    }
-    if (params.get('gmail_error')) {
-      window.history.replaceState({}, '', window.location.pathname);
-      toast({ title: 'Gmail Connection Failed', description: params.get('gmail_error'), variant: 'destructive' });
-    }
-    // Check existing connection on page load
-    brokermind.functions.invoke('fetchGmailEmails', { check_connection: true })
-      .then(res => {
-        if (res?.connected_email) {
-          setUserEmail(res.connected_email);
-          setConnected(true);
-        }
-      }).catch(() => {});
-  }, []);
 
 
   // Read emails from Email entity (source of truth)
@@ -127,20 +98,6 @@ export default function MailSortAI() {
     refetchEmails();
   }, [refetchEmails]);
 
-  const handleConnect = useCallback(() => {
-    const apiBase = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
-    window.location.href = `${apiBase}/auth/gmail/connect`;
-  }, []);
-
-  const handleDisconnect = useCallback(async () => {
-    const apiBase = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
-    await fetch(`${apiBase}/auth/gmail/disconnect`).catch(() => {});
-    setConnected(false);
-    setUserEmail('');
-    setEmails([]);
-    toast({ title: 'Disconnected', description: 'Gmail account disconnected', duration: 2000 });
-  }, [toast]);
-
   const filteredData = triageData.filter(email => {
     const mainCats = Object.keys(TRIAGE_CATEGORIES);
     const categoryMatch =
@@ -156,16 +113,10 @@ export default function MailSortAI() {
 
   return (
     <div className="h-screen flex flex-col" style={{ backgroundColor: '#F5F7FA' }}>
-      <MailSortHeader 
-        connected={connected}
-        userEmail={userEmail}
-        onConnect={handleConnect}
-        onDisconnect={handleDisconnect}
-      />
+      <MailSortHeader />
       
       <div className="flex flex-1 overflow-hidden">
         <MailSortSidebar
-          connected={connected}
           triageData={triageData}
           loading={loading}
           filterCategory={filterCategory}

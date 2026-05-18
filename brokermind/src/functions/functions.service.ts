@@ -1024,7 +1024,7 @@ export class FunctionsService {
       'is:unread -category:promotions -category:social -category:updates -category:forums -category:spam',
     );
     const listRes = await fetch(
-      `https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${q}&maxResults=20`,
+      `https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${q}&maxResults=5`,
       { headers: { Authorization: `Bearer ${accessToken}` } },
     );
     if (!listRes.ok) return { error: 'Failed to fetch Gmail list', status: 500 };
