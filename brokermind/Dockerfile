@@ -26,4 +26,4 @@ COPY package*.json ./
 EXPOSE 4000
 
 # Run migrations then start
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"]
+CMD ["sh", "-c", "npx prisma migrate deploy && npx ts-node prisma/seed.ts && node dist/main"]
