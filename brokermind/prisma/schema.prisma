@@ -1,0 +1,235 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  id           String  @id @default(uuid())
+  client_id    String? @unique
+  name         String
+  phone        String  @unique
+  pan          String?
+  broker_code  String?
+  kyc_status   String?
+  created_date String  @default("")
+  updated_date String  @default("")
+
+  @@index([phone])
+}
+
+model CallRecording {
+  id                  String  @id @default(uuid())
+  recording_id        String?
+  session_id          String
+  client_id           String
+  recording_url       String?
+  transcript          String?
+  duration_seconds    Float?
+  received_at         String?
+  analysis_status     String  @default("PENDING")
+  ai_analysis         String?
+  sub_category        String?
+  priority            String?
+  verification_status String  @default("UNVERIFIED")
+  verified_by         String?
+  verified_at         String?
+  notes               String?
+  created_date        String  @default("")
+  updated_date        String  @default("")
+
+  @@index([session_id])
+  @@index([verification_status])
+  @@index([analysis_status])
+}
+
+model Conversation {
+  id               String  @id @default(uuid())
+  session_id       String
+  client_id        String
+  channel          String?
+  bucket           String?
+  summary          String?
+  transcript       String?
+  status           String?
+  duration_seconds Float?
+  timestamp        String?
+  created_date     String  @default("")
+  updated_date     String  @default("")
+
+  @@index([session_id])
+  @@index([client_id])
+}
+
+model Email {
+  id                  String   @id @default(uuid())
+  message_id          String   @unique
+  from_email          String
+  from_name           String?
+  subject             String
+  body                String?
+  received_at         String?
+  is_relevant         Boolean  @default(true)
+  triage_category     String?
+  sub_category        String?
+  priority            String   @default("NORMAL")
+  ai_summary          String?
+  ai_analysis         String?
+  recommended_action  String?
+  routed_to           String?
+  analysis_status     String   @default("PENDING")
+  verification_status String   @default("UNVERIFIED")
+  verified_by         String?
+  verified_at         String?
+  notes               String?
+  created_date        String   @default("")
+  updated_date        String   @default("")
+
+  @@index([from_email])
+  @@index([triage_category])
+}
+
+model Escalation {
+  id              String  @id @default(uuid())
+  escalation_id   String?
+  session_id      String
+  client_id       String
+  reason          String
+  handoff_context String?
+  assigned_agent  String?
+  status          String  @default("OPEN")
+  resolved_at     String?
+  created_date    String  @default("")
+  updated_date    String  @default("")
+
+  @@index([session_id])
+  @@index([status])
+}
+
+model FAQ {
+  id           String  @id @default(uuid())
+  faq_id       String?
+  question     String
+  answer       String
+  category     String
+  broker_code  String?
+  created_date String  @default("")
+  updated_date String  @default("")
+
+  @@index([category])
+}
+
+model Margin {
+  id               String  @id @default(uuid())
+  client_id        String  @unique
+  total_margin     Float?
+  used_margin      Float?
+  available_margin Float?
+  created_date     String  @default("")
+  updated_date     String  @default("")
+}
+
+model Orders {
+  id           String  @id @default(uuid())
+  order_id     String?
+  client_id    String
+  symbol       String
+  qty          Float?
+  order_type   String?
+  status       String?
+  price        Float?
+  timestamp    String?
+  created_date String  @default("")
+  updated_date String  @default("")
+
+  @@index([client_id])
+  @@index([order_id])
+}
+
+model PerformedAction {
+  id              String  @id @default(uuid())
+  recording_id    String
+  session_id      String?
+  client_id       String
+  triage_type     String
+  action_type     String
+  action_details  String?
+  performed_by    String
+  performed_at    String?
+  status          String  @default("COMPLETED")
+  created_date    String  @default("")
+  updated_date    String  @default("")
+
+  @@index([recording_id])
+  @@index([session_id])
+}
+
+model Portfolio {
+  id             String  @id @default(uuid())
+  client_id      String
+  symbol         String
+  qty            Float?
+  avg_price      Float?
+  ltp            Float?
+  pnl_unrealised Float?
+  created_date   String  @default("")
+  updated_date   String  @default("")
+
+  @@index([client_id])
+}
+
+model SupportQuery {
+  id                String  @id @default(uuid())
+  name              String
+  phone             String
+  query             String
+  submitted_at      String?
+  status            String  @default("OPEN")
+  resolved_by       String?
+  resolution_notes  String?
+  created_date      String  @default("")
+  updated_date      String  @default("")
+}
+
+model Ticket {
+  id                  String  @id @default(uuid())
+  ticket_id           String  @unique
+  source              String
+  status              String  @default("OPEN")
+  priority            String  @default("NORMAL")
+  category            String?
+  subject             String?
+  client_name         String?
+  client_phone        String?
+  client_email        String?
+  assigned_to         String?
+  created_at          String?
+  updated_at          String?
+  resolved_at         String?
+  resolution_notes    String?
+  source_id           String?
+  performed_action_id String?
+  raw_summary         String?
+  created_date        String  @default("")
+  updated_date        String  @default("")
+
+  @@index([source_id])
+  @@index([status])
+}
+
+model AISOPSuggestion {
+  id                String  @id @default(uuid())
+  category          String
+  title             String
+  steps             String
+  reasoning         String
+  estimated_impact  String?
+  status            String  @default("PENDING")
+  feedback_note     String?
+  confidence_score  Float?
+  created_date      String  @default("")
+  updated_date      String  @default("")
+}
