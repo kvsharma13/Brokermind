@@ -128,12 +128,13 @@ export default function MailSortAI() {
   }, [refetchEmails]);
 
   const handleConnect = useCallback(() => {
-    // Redirect to backend OAuth flow
-    window.location.href = '/api/auth/gmail/connect';
+    const apiBase = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
+    window.location.href = `${apiBase}/auth/gmail/connect`;
   }, []);
 
   const handleDisconnect = useCallback(async () => {
-    await fetch('/api/auth/gmail/disconnect').catch(() => {});
+    const apiBase = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '');
+    await fetch(`${apiBase}/auth/gmail/disconnect`).catch(() => {});
     setConnected(false);
     setUserEmail('');
     setEmails([]);
