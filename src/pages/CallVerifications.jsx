@@ -220,7 +220,7 @@ export default function CallVerifications() {
     } catch (err) {
       toast({
         title: 'Sync Failed',
-        description: err.message || 'Failed to sync from Bolna',
+        description: err.message || 'Failed to sync recordings',
         variant: 'destructive',
         duration: 3000,
       });
@@ -316,7 +316,7 @@ export default function CallVerifications() {
           {isLoading ? (
             <div className="p-6"><TableSkeleton rows={5} cols={7} /></div>
           ) : filtered.length === 0 ? (
-            <EmptyState message="No call recordings yet — waiting for Bolna to send recordings" icon={Mic} />
+            <EmptyState message="No call recordings yet — waiting for AI agent to send recordings" icon={Mic} />
           ) : (
             <div className="w-full">
               <Table className="w-full table-fixed" style={{ fontSize: '10px' }}>

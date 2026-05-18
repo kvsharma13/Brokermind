@@ -76,7 +76,7 @@ export default function ClientSimulator() {
         client_name: client.name,
         client_id: client.client_id,
       });
-      toast({ title: 'Call Queued', description: `Bolna AI is calling ${client.name} (${client.phone}). Execution ID: ${res.execution_id}` });
+      toast({ title: 'Call Queued', description: `AI is calling ${client.name} (${client.phone}). Execution ID: ${res.execution_id}` });
     } catch (err) {
       toast({ title: 'Call Failed', description: err.message, variant: 'destructive' });
     } finally {
@@ -150,7 +150,7 @@ export default function ClientSimulator() {
                     disabled={calling}
                   >
                     {calling ? <Loader2 className="w-4 h-4 animate-spin" /> : <Phone className="w-4 h-4" />}
-                    {calling ? 'Calling...' : 'Call via Bolna'}
+                    {calling ? 'Calling...' : 'AI Call'}
                   </Button>
                 </CardHeader>
                 <CardContent>
