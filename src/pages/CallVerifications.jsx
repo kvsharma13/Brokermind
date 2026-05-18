@@ -318,20 +318,20 @@ export default function CallVerifications() {
           ) : filtered.length === 0 ? (
             <EmptyState message="No call recordings yet — waiting for Bolna to send recordings" icon={Mic} />
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
+            <div className="w-full">
+              <Table className="text-xs">
                 <TableHeader>
                   <TableRow>
-                     <TableHead className="text-xs">Received At</TableHead>
+                     <TableHead className="text-xs whitespace-nowrap">Received At</TableHead>
                      <TableHead className="text-xs">Client</TableHead>
-                     <TableHead className="text-xs">Duration</TableHead>
+                     <TableHead className="text-xs">Dur.</TableHead>
                      <TableHead className="text-xs">AI Summary</TableHead>
-                        <TableHead className="text-xs">Action Type</TableHead>
+                        <TableHead className="text-xs whitespace-nowrap">Action Type</TableHead>
                         <TableHead className="text-xs">Triage</TableHead>
-                        <TableHead className="text-xs">Sub Category</TableHead>
+                        <TableHead className="text-xs whitespace-nowrap">Sub Category</TableHead>
                         <TableHead className="text-xs">Risk</TableHead>
                         <TableHead className="text-xs">Priority</TableHead>
-                     <TableHead className="text-xs">Extractions</TableHead>
+                     <TableHead className="text-xs">Ext.</TableHead>
                      <TableHead className="text-xs">Status</TableHead>
                      <TableHead className="text-xs">Review</TableHead>
                      <TableHead className="text-xs"></TableHead>
@@ -343,13 +343,13 @@ export default function CallVerifications() {
                     const client = clientMap[rec.client_id];
                     return (
                       <TableRow key={rec.id} className="hover:bg-muted/40">
-                        <TableCell className="text-sm">{rec.received_at ? format(new Date(rec.received_at), 'MMM d, HH:mm') : '-'}</TableCell>
+                        <TableCell className="text-xs whitespace-nowrap">{rec.received_at ? format(new Date(rec.received_at), 'MMM d, HH:mm') : '-'}</TableCell>
                         <TableCell>
-                          <p className="text-sm font-mono">{rec.client_id || '—'}</p>
+                          <p className="text-xs font-mono">{rec.client_id || '—'}</p>
                         </TableCell>
-                        <TableCell className="text-sm font-mono">{formatDuration(rec.duration_seconds)}</TableCell>
-                        <TableCell className="text-sm text-muted-foreground max-w-[220px] truncate">
-                          {analysis?.summary ? analysis.summary.slice(0, 80) + (analysis.summary.length > 80 ? '…' : '') : rec.analysis_status}
+                        <TableCell className="text-xs font-mono whitespace-nowrap">{formatDuration(rec.duration_seconds)}</TableCell>
+                        <TableCell className="text-xs text-muted-foreground max-w-[160px] truncate">
+                          {analysis?.summary ? analysis.summary.slice(0, 60) + (analysis.summary.length > 60 ? '…' : '') : rec.analysis_status}
                         </TableCell>
                         <TableCell>
                           <Badge variant="outline" className={`text-xs font-semibold ${TRIAGE_BADGE[classifyCall(analysis)]}`}>
@@ -384,7 +384,7 @@ export default function CallVerifications() {
                             </Badge>
                           ) : <span className="text-xs text-muted-foreground">—</span>}
                         </TableCell>
-                        <TableCell className="text-sm text-center font-semibold">
+                        <TableCell className="text-xs text-center font-semibold">
                           {analysis?.extractions?.length ?? '—'}
                         </TableCell>
                         <TableCell>

@@ -49,20 +49,8 @@ export default function MailSortAI() {
   const [filterPriority, setFilterPriority] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const handleFetchEmails = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await brokermind.functions.invoke('fetchGmailEmails', {});
-      const fetched = res?.emails || [];
-      setEmails(fetched);
-      setEmailsFetched(true);
-      await refetchEmails();
-      toast({ title: 'Emails Checked', description: `${fetched.length} emails fetched and being analyzed`, duration: 3000 });
-    } catch (err) {
-      toast({ title: 'Error', description: err.message || 'Failed to fetch emails', variant: 'destructive', duration: 3000 });
-    } finally {
-      setLoading(false);
-    }
+  const handleFetchEmails = useCallback(() => {
+    toast({ title: 'Not Available', description: 'Email triage agent not available in demo version', variant: 'destructive', duration: 3000 });
   }, [toast]);
 
   const handleRunTriage = useCallback(async () => {
