@@ -267,19 +267,20 @@ export default function TicketTracker() {
             <EmptyState message="No tickets found" />
           ) : (
             <div className="w-full">
-              <Table className="text-xs w-full table-fixed">
+              <Table className="w-full table-fixed" style={{ fontSize: '10px' }}>
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-8"></TableHead>
-                    <TableHead className="text-xs w-[90px]">Ticket ID</TableHead>
-                    <TableHead className="text-xs w-[90px]">Created</TableHead>
-                    <TableHead className="text-xs w-[60px]">Source</TableHead>
-                    <TableHead className="text-xs w-[100px]">Client</TableHead>
-                    <TableHead className="text-xs w-[110px]">Category</TableHead>
-                    <TableHead className="text-xs">Subject</TableHead>
-                    <TableHead className="text-xs w-[70px]">Priority</TableHead>
-                    <TableHead className="text-xs w-[90px]">Status</TableHead>
-                    <TableHead className="text-xs w-[130px]">Actions</TableHead>
+                    <TableHead className="w-7 py-2 px-1"></TableHead>
+                    <TableHead className="w-[88px] py-2 px-2">Ticket ID</TableHead>
+                    <TableHead className="w-[80px] py-2 px-2">Created</TableHead>
+                    <TableHead className="w-[52px] py-2 px-2">Source</TableHead>
+                    <TableHead className="w-[90px] py-2 px-2">Client</TableHead>
+                    <TableHead className="w-[100px] py-2 px-2">Category</TableHead>
+                    <TableHead className="py-2 px-2">Subject</TableHead>
+                    <TableHead className="w-[62px] py-2 px-2">Priority</TableHead>
+                    <TableHead className="w-[80px] py-2 px-2">Status</TableHead>
+                    <TableHead className="w-[80px] py-2 px-2">Assigned To</TableHead>
+                    <TableHead className="w-[120px] py-2 px-2">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -289,35 +290,36 @@ export default function TicketTracker() {
                         className="cursor-pointer hover:bg-muted/40"
                         onClick={() => toggleExpand(ticket.id)}
                       >
-                        <TableCell className="w-8">
+                        <TableCell className="py-1.5 px-1">
                           {expandedId === ticket.id
-                            ? <ChevronDown className="w-4 h-4 text-muted-foreground" />
-                            : <ChevronRight className="w-4 h-4 text-muted-foreground" />}
+                            ? <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
+                            : <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" />}
                         </TableCell>
-                        <TableCell className="font-mono text-xs font-semibold truncate">{ticket.ticket_id}</TableCell>
-                        <TableCell className="text-xs">{ticket.created_at ? format(new Date(ticket.created_at), 'MMM d, HH:mm') : '—'}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className={`text-xs ${SOURCE_BADGE[ticket.source] || ''}`}>{ticket.source}</Badge>
+                        <TableCell className="py-1.5 px-2 font-mono font-semibold truncate">{ticket.ticket_id}</TableCell>
+                        <TableCell className="py-1.5 px-2">{ticket.created_at ? format(new Date(ticket.created_at), 'MMM d, HH:mm') : '—'}</TableCell>
+                        <TableCell className="py-1.5 px-2">
+                          <Badge variant="outline" className={`text-[9px] px-1 py-0 ${SOURCE_BADGE[ticket.source] || ''}`}>{ticket.source}</Badge>
                         </TableCell>
-                        <TableCell className="text-xs font-medium truncate">{ticket.client_name || '—'}</TableCell>
-                        <TableCell className="text-xs truncate">{ticket.category || '—'}</TableCell>
-                        <TableCell className="text-xs truncate">{ticket.subject || '—'}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className={`text-xs ${PRIORITY_BADGE[ticket.priority] || ''}`}>{ticket.priority}</Badge>
+                        <TableCell className="py-1.5 px-2 font-medium truncate">{ticket.client_name || '—'}</TableCell>
+                        <TableCell className="py-1.5 px-2 truncate">{ticket.category || '—'}</TableCell>
+                        <TableCell className="py-1.5 px-2 truncate">{ticket.subject || '—'}</TableCell>
+                        <TableCell className="py-1.5 px-2">
+                          <Badge variant="outline" className={`text-[9px] px-1 py-0 ${PRIORITY_BADGE[ticket.priority] || ''}`}>{ticket.priority}</Badge>
                         </TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className={`text-xs ${STATUS_BADGE[ticket.status] || ''}`}>{ticket.status?.replace('_', ' ')}</Badge>
+                        <TableCell className="py-1.5 px-2">
+                          <Badge variant="outline" className={`text-[9px] px-1 py-0 ${STATUS_BADGE[ticket.status] || ''}`}>{ticket.status?.replace('_', ' ')}</Badge>
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="py-1.5 px-2 truncate">{ticket.assigned_to || '—'}</TableCell>
+                        <TableCell className="py-1.5 px-2">
                           <div className="flex gap-1">
                             <Button
-                              size="sm" variant="outline" className="text-xs gap-1 h-7 px-2"
+                              size="sm" variant="outline" className="h-6 px-1.5 text-[10px] gap-1"
                               onClick={e => { e.stopPropagation(); setWorkflowTicket(ticket); }}
                             >
                               <Eye className="w-3 h-3" /> View
                             </Button>
                             <Button
-                              size="sm" variant="outline" className="text-xs h-7 px-2"
+                              size="sm" variant="outline" className="h-6 px-1.5 text-[10px]"
                               onClick={e => toggleUpdate(ticket.id, e)}
                             >
                               Update
@@ -327,14 +329,14 @@ export default function TicketTracker() {
                       </TableRow>
                       {updatePanelId === ticket.id && (
                         <TableRow>
-                          <TableCell colSpan={10} className="p-0">
+                          <TableCell colSpan={11} className="p-0">
                             <UpdatePanel ticket={ticket} onClose={() => setUpdatePanelId(null)} />
                           </TableCell>
                         </TableRow>
                       )}
                       {expandedId === ticket.id && (
                         <TableRow>
-                          <TableCell colSpan={10} className="p-0">
+                          <TableCell colSpan={11} className="p-0">
                             <DetailPanel ticket={ticket} />
                           </TableCell>
                         </TableRow>

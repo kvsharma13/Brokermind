@@ -319,20 +319,22 @@ export default function CallVerifications() {
             <EmptyState message="No call recordings yet — waiting for Bolna to send recordings" icon={Mic} />
           ) : (
             <div className="w-full">
-              <Table className="text-xs w-full table-fixed">
+              <Table className="w-full table-fixed" style={{ fontSize: '10px' }}>
                 <TableHeader>
                   <TableRow>
-                     <TableHead className="text-xs w-[90px]">Received</TableHead>
-                     <TableHead className="text-xs w-[70px]">Client</TableHead>
-                     <TableHead className="text-xs w-[55px]">Dur.</TableHead>
-                     <TableHead className="text-xs">AI Summary</TableHead>
-                     <TableHead className="text-xs w-[90px]">Triage</TableHead>
-                     <TableHead className="text-xs w-[110px]">Sub Category</TableHead>
-                     <TableHead className="text-xs w-[60px]">Risk</TableHead>
-                     <TableHead className="text-xs w-[70px]">Priority</TableHead>
-                     <TableHead className="text-xs w-[90px]">Status</TableHead>
-                     <TableHead className="text-xs w-[80px]">Review</TableHead>
-                     <TableHead className="text-xs w-[40px]"></TableHead>
+                     <TableHead className="w-[78px] py-2 px-2">Received At</TableHead>
+                     <TableHead className="w-[58px] py-2 px-2">Client</TableHead>
+                     <TableHead className="w-[48px] py-2 px-2">Dur.</TableHead>
+                     <TableHead className="py-2 px-2">AI Summary</TableHead>
+                     <TableHead className="w-[80px] py-2 px-2">Action Type</TableHead>
+                     <TableHead className="w-[80px] py-2 px-2">Triage</TableHead>
+                     <TableHead className="w-[95px] py-2 px-2">Sub Category</TableHead>
+                     <TableHead className="w-[50px] py-2 px-2">Risk</TableHead>
+                     <TableHead className="w-[60px] py-2 px-2">Priority</TableHead>
+                     <TableHead className="w-[32px] py-2 px-2">Ext.</TableHead>
+                     <TableHead className="w-[85px] py-2 px-2">Status</TableHead>
+                     <TableHead className="w-[65px] py-2 px-2">Review</TableHead>
+                     <TableHead className="w-[36px] py-2 px-1"></TableHead>
                    </TableRow>
                  </TableHeader>
                 <TableBody>
@@ -341,55 +343,63 @@ export default function CallVerifications() {
                     const client = clientMap[rec.client_id];
                     return (
                       <TableRow key={rec.id} className="hover:bg-muted/40">
-                        <TableCell className="text-xs">{rec.received_at ? format(new Date(rec.received_at), 'MMM d, HH:mm') : '-'}</TableCell>
-                        <TableCell className="text-xs font-mono truncate">{rec.client_id || '—'}</TableCell>
-                        <TableCell className="text-xs font-mono">{formatDuration(rec.duration_seconds)}</TableCell>
-                        <TableCell className="text-xs text-muted-foreground truncate">
+                        <TableCell className="py-1.5 px-2">{rec.received_at ? format(new Date(rec.received_at), 'MMM d, HH:mm') : '-'}</TableCell>
+                        <TableCell className="py-1.5 px-2 font-mono truncate">{rec.client_id || '—'}</TableCell>
+                        <TableCell className="py-1.5 px-2 font-mono">{formatDuration(rec.duration_seconds)}</TableCell>
+                        <TableCell className="py-1.5 px-2 text-muted-foreground truncate">
                           {analysis?.summary ? analysis.summary.slice(0, 55) + (analysis.summary.length > 55 ? '…' : '') : rec.analysis_status}
                         </TableCell>
-                         <TableCell>
+                        <TableCell className="py-1.5 px-2">
+                          <Badge variant="outline" className={`text-[9px] px-1 py-0 font-semibold ${TRIAGE_BADGE[classifyCall(analysis)]}`}>
+                            {classifyCall(analysis).replace(/_/g, ' ')}
+                          </Badge>
+                        </TableCell>
+                         <TableCell className="py-1.5 px-2">
                            {(() => {
                              const triage = triageCall(rec, analysis);
-                             if (!triage) return <Badge variant="outline" className="text-xs bg-gray-50 text-gray-400 border-gray-200">Analyzing…</Badge>;
-                             return <Badge variant="outline" className={`text-xs font-semibold ${INTENT_TRIAGE_BADGE[triage]}`}>{triage}</Badge>;
+                             if (!triage) return <Badge variant="outline" className="text-[9px] px-1 py-0 bg-gray-50 text-gray-400 border-gray-200">Analyzing…</Badge>;
+                             return <Badge variant="outline" className={`text-[9px] px-1 py-0 font-semibold ${INTENT_TRIAGE_BADGE[triage]}`}>{triage}</Badge>;
                            })()}
                          </TableCell>
-                        <TableCell>
+                        <TableCell className="py-1.5 px-2">
                           {rec.sub_category ? (
-                            <Badge variant="outline" className="text-xs font-semibold bg-blue-50 text-blue-700 border-blue-200 truncate max-w-full">
+                            <Badge variant="outline" className="text-[9px] px-1 py-0 font-semibold bg-blue-50 text-blue-700 border-blue-200 block truncate max-w-full">
                               {rec.sub_category}
                             </Badge>
-                          ) : <span className="text-xs text-muted-foreground">—</span>}
+                          ) : <span className="text-muted-foreground">—</span>}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="py-1.5 px-2">
                           {analysis?.overall_risk ? (
-                            <Badge variant="outline" className={`text-xs font-semibold ${RISK_BADGE[analysis.overall_risk]}`}>
+                            <Badge variant="outline" className={`text-[9px] px-1 py-0 font-semibold ${RISK_BADGE[analysis.overall_risk]}`}>
                               {analysis.overall_risk}
                             </Badge>
-                          ) : <span className="text-xs text-muted-foreground">—</span>}
+                          ) : <span className="text-muted-foreground">—</span>}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="py-1.5 px-2">
                           {rec.priority ? (
-                            <Badge variant="outline" className={`text-xs font-semibold ${PRIORITY_BADGE[rec.priority] || 'bg-gray-50 text-gray-700 border-gray-200'}`}>
+                            <Badge variant="outline" className={`text-[9px] px-1 py-0 font-semibold ${PRIORITY_BADGE[rec.priority] || 'bg-gray-50 text-gray-700 border-gray-200'}`}>
                               {rec.priority}
                             </Badge>
-                          ) : <span className="text-xs text-muted-foreground">—</span>}
+                          ) : <span className="text-muted-foreground">—</span>}
                         </TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className={`text-xs ${VERIFY_BADGE[rec.verification_status] || ''}`}>
+                        <TableCell className="py-1.5 px-2 text-center font-semibold">
+                          {analysis?.extractions?.length ?? '—'}
+                        </TableCell>
+                        <TableCell className="py-1.5 px-2">
+                          <Badge variant="outline" className={`text-[9px] px-1 py-0 ${VERIFY_BADGE[rec.verification_status] || ''}`}>
                             {rec.verification_status}
                           </Badge>
                         </TableCell>
-                        <TableCell>
-                          <Button size="sm" variant="outline" className="gap-1.5 text-xs" onClick={() => setSelectedId(rec.id)}>
-                            <Eye className="w-3.5 h-3.5" /> Review
+                        <TableCell className="py-1.5 px-2">
+                          <Button size="sm" variant="outline" className="h-6 px-1.5 text-[10px] gap-1" onClick={() => setSelectedId(rec.id)}>
+                            <Eye className="w-3 h-3" /> Review
                           </Button>
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="py-1.5 px-1">
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <Button size="sm" variant="ghost" className="text-destructive hover:text-destructive hover:bg-destructive/10">
-                                <Trash2 className="w-3.5 h-3.5" />
+                              <Button size="sm" variant="ghost" className="h-6 w-6 p-0 text-destructive hover:text-destructive hover:bg-destructive/10">
+                                <Trash2 className="w-3 h-3" />
                               </Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
