@@ -190,6 +190,31 @@ async function main() {
     });
   }
 
+  // ── Conversations ─────────────────────────────────────────────────────────
+  const today = new Date().toISOString().split('T')[0];
+  const conversations = [
+    { id: 'CONV001', session_id: 'sess-001', client_id: 'TM001', channel: 'CALL', bucket: 'A', summary: 'Client asked about intraday P&L and margin available for tomorrow.', status: 'RESOLVED', duration_seconds: 185, timestamp: `${today}T09:22:00.000Z` },
+    { id: 'CONV002', session_id: 'sess-002', client_id: 'TM003', channel: 'CALL', bucket: 'B', summary: 'Client requested to place a limit order for 200 shares of RELIANCE at ₹2,910.', status: 'RESOLVED', duration_seconds: 240, timestamp: `${today}T09:45:00.000Z` },
+    { id: 'CONV003', session_id: 'sess-003', client_id: 'TM007', channel: 'CALL', bucket: 'C', summary: 'Client reported unauthorized trade in their account — escalated to compliance team.', status: 'ESCALATED', duration_seconds: 420, timestamp: `${today}T10:10:00.000Z` },
+    { id: 'CONV004', session_id: 'sess-004', client_id: 'TM002', channel: 'CALL', bucket: 'A', summary: 'Client enquired about brokerage charges for F&O trading.', status: 'RESOLVED', duration_seconds: 130, timestamp: `${today}T10:33:00.000Z` },
+    { id: 'CONV005', session_id: 'sess-005', client_id: 'TM005', channel: 'CALL', bucket: 'B', summary: 'Client requested fund withdrawal of ₹50,000 to linked bank account.', status: 'RESOLVED', duration_seconds: 310, timestamp: `${today}T11:05:00.000Z` },
+    { id: 'CONV006', session_id: 'sess-006', client_id: 'TM009', channel: 'CALL', bucket: 'A', summary: 'Client asked about current holdings and overall portfolio performance.', status: 'RESOLVED', duration_seconds: 160, timestamp: `${today}T11:30:00.000Z` },
+    { id: 'CONV007', session_id: 'sess-007', client_id: 'TM004', channel: 'CALL', bucket: 'C', summary: 'Client flagged suspicious login alert on account. Security review initiated.', status: 'ESCALATED', duration_seconds: 380, timestamp: `${today}T12:15:00.000Z` },
+    { id: 'CONV008', session_id: 'sess-008', client_id: 'TM006', channel: 'CALL', bucket: 'B', summary: 'Client asked about margin requirements for NIFTY futures position.', status: 'RESOLVED', duration_seconds: 195, timestamp: `${today}T13:00:00.000Z` },
+    { id: 'CONV009', session_id: 'sess-009', client_id: 'TM010', channel: 'CALL', bucket: 'A', summary: 'Client asked how to enable options trading on their account.', status: 'RESOLVED', duration_seconds: 145, timestamp: `${today}T13:45:00.000Z` },
+    { id: 'CONV010', session_id: 'sess-010', client_id: 'TM008', channel: 'CALL', bucket: 'B', summary: 'Client requested to modify stop-loss order for HDFC Bank position.', status: 'RESOLVED', duration_seconds: 220, timestamp: `${today}T14:10:00.000Z` },
+    { id: 'CONV011', session_id: 'sess-011', client_id: 'TM001', channel: 'CALL', bucket: 'A', summary: 'Client asked about dividend credit timeline for recently held stocks.', status: 'RESOLVED', duration_seconds: 110, timestamp: `${today}T14:50:00.000Z` },
+    { id: 'CONV012', session_id: 'sess-012', client_id: 'TM003', channel: 'CALL', bucket: 'C', summary: 'Client received margin call notification and wants to add emergency funds.', status: 'ACTIVE',   duration_seconds: 290, timestamp: `${today}T15:05:00.000Z` },
+  ];
+
+  for (const c of conversations) {
+    await prisma.conversation.upsert({
+      where: { id: c.id },
+      update: {},
+      create: { ...c, created_date: now, updated_date: now },
+    });
+  }
+
   // ── AI SOP Suggestions ────────────────────────────────────────────────────
   const suggestions = [
     { id: 'SOP001', category: 'Compliance', title: 'Mandatory callback for fund transfers above ₹1L', steps: '1. Flag all transfer requests above ₹1L\n2. Initiate AI callback to client\n3. Verify identity with OTP + security question\n4. Process only after dual confirmation', reasoning: '3 out of 5 escalations in last 30 days involved large unauthorized transfers.', estimated_impact: 'Reduce compliance escalations by ~60%', status: 'PENDING', confidence_score: 0.91 },
@@ -205,7 +230,7 @@ async function main() {
     });
   }
 
-  console.log('✅ Seed complete — FAQs, Clients, Margins, Orders, Portfolio, Tickets, Escalations, Actions, Emails, SOP Suggestions all populated.');
+  console.log('✅ Seed complete — FAQs, Clients, Margins, Orders, Portfolio, Tickets, Escalations, Actions, Emails, Conversations, SOP Suggestions all populated.');
 }
 
 main()
