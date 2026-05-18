@@ -52,12 +52,16 @@ function safeJson(s) {
   }
 }
 
+function toArray(r) {
+  return Array.isArray(r) ? r : [];
+}
+
 function makeEntity(name) {
   return {
     list: (sort, limit) =>
-      request('GET', `/entities/${name}`, { query: { sort, limit } }),
+      request('GET', `/entities/${name}`, { query: { sort, limit } }).then(toArray),
     filter: (where, sort, limit) =>
-      request('POST', `/entities/${name}/query`, { body: where || {}, query: { sort, limit } }),
+      request('POST', `/entities/${name}/query`, { body: where || {}, query: { sort, limit } }).then(toArray),
     get: (id) => request('GET', `/entities/${name}/${id}`),
     create: (data) => request('POST', `/entities/${name}`, { body: data }),
     update: (id, data) => request('PATCH', `/entities/${name}/${id}`, { body: data }),
