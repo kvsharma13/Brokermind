@@ -43,6 +43,12 @@ export class GmailAuthController {
     };
   }
 
+  @Get('debug-token')
+  async debugToken() {
+    const token = await this.gmailAuth.getAccessToken();
+    return { has_token: !!token, token_prefix: token ? token.substring(0, 20) + '...' : null };
+  }
+
   @Get('disconnect')
   disconnect() {
     this.gmailAuth.disconnect();
